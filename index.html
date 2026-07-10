@@ -1,312 +1,20 @@
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>붐이 홈피</title>
-<style>
-* {
-    box-sizing: border-box;
-}
-body {
-    margin: 0;
-    background: #fff;
-    font-family: dotum, sans-serif;
-    color: #222;
-}
-.wrap {
-    width: 100%;
-    max-width: 1080px;
-    margin: 0 auto;
-}
-.title {
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #111;
-}
-.main-img {
-    width: 100%;
-    display: block;
-    height: auto;
-    background: #f0f0f0;
-}
-.guestbook {
-    width: 100%;
-    background: #f9f9f9;
-    border-top: 2px solid #222;
-    padding: 15px;
-}
-.guestbook-form {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.guestbook textarea {
-    background: #fff;
-    border: 1px solid #ccc;
-    color: #222;
-    padding: 8px;
-    font-size: 13px;
-    font-family: dotum, sans-serif;
-    width: 100%;
-    resize: vertical;
-    min-height: 80px;
-    border-radius: 4px;
-}
-.guestbook button {
-    background: #111;
-    border: none;
-    padding: 8px 16px;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 13px;
-    align-self: flex-end;
-    transition: opacity 0.2s;
-}
-.guestbook button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-.entry {
-    margin: 10px 0;
-    padding: 8px 10px;
-    background: rgba(255,255,255,0.7);
-    border-left: 3px solid #333;
-    border-radius: 6px;
-    color: #333;
-    transition: 0.2s;
-    word-break: break-all;
-}
-.entry:hover {
-    transform: translateX(3px);
-    background: rgba(240,240,240,0.85);
-}
-.name {
-    color: #111;
-    font-weight: bold;
-}
-hr {
-    border: none;
-    border-top: 1px solid #ddd;
-    margin: 10px 0;
-}
-.status-msg {
-    font-size: 12px;
-    color: #555;
-    min-height: 16px;
-}
-
-/* BGM 바 */
-.bgm-bar {
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0,0,0,0.12);
-    border-top: 1px solid rgba(255,255,255,0.9);
-    padding: 8px 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    color: #222;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    flex-wrap: wrap;
-}
-.bgm-bar span {
-    color: #444;
-    letter-spacing: 0.03em;
-}
-.bgm-bar button {
-    background: rgba(255,255,255,0.5);
-    border: 1px solid rgba(0,0,0,0.2);
-    color: #111;
-    padding: 4px 12px;
-    font-size: 12px;
-    cursor: pointer;
-    border-radius: 20px;
-    font-weight: bold;
-    transition: all 0.2s;
-    backdrop-filter: blur(6px);
-}
-.bgm-bar button:hover {
-    background: #111;
-    color: #fff;
-    border-color: #111;
-}
-.bgm-bar button.skip {
-    padding: 4px 10px;
-    font-size: 13px;
-}
-input[type=range] {
-    -webkit-appearance: none;
-    width: 80px;
-    height: 3px;
-    background: rgba(0,0,0,0.15);
-    border: none;
-    border-radius: 3px;
-    outline: none;
-    padding: 0;
-}
-input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    background: #111;
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-/* 모바일 최적화 */
-@media (max-width: 600px) {
-    .title {
-        font-size: 15px;
-        padding: 10px 12px;
-    }
-    .bgm-bar {
-        padding: 6px 10px;
-        gap: 7px;
-        font-size: 11px;
-    }
-    input[type=range] {
-        width: 60px;
-    }
-    .guestbook {
-        padding: 12px;
-    }
-    .guestbook textarea {
-        font-size: 14px;
-    }
-    .guestbook button {
-        width: 100%;
-        align-self: stretch;
-    }
-}
-</style>
-</head>
-<body>
-
-<audio id="bgm" preload="auto"></audio>
-
-<div class="wrap">
-    <div class="title">붐이 홈피</div>
-
-    <div class="bgm-bar">
-        <span style="filter: brightness(0);">🎵</span><span> BGM</span>
-        <button class="skip" onclick="prevTrack()">◀</button>
-        <button id="playBtn" onclick="toggleBGM()">▶ 재생</button>
-        <button class="skip" onclick="nextTrack()">▶</button>
-        <span>볼륨</span>
-        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5"
-               oninput="document.getElementById('bgm').volume = this.value">
-    </div>
-
-    <img class="main-img"
-         src="https://nlvkfrekpundyinhgtzo.supabase.co/storage/v1/object/sign/akfus/homehome.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85MWQ0NGMxYy0yMWJhLTRlN2QtYjM1Mi01NWYwYmI0NzNkODEiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJha2Z1cy9ob21laG9tZS5qcGciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzgyMDM5MzIwLCJleHAiOjE4MTM1NzUzMjB9.h3uLpdLUP9-SjwhaZfbOuJeUjUI8a-WYw9iNZHcYTNw"
-         loading="lazy" decoding="async">
-
-    <div class="guestbook">
-        <div style="color:#111; font-weight:bold;">방명록 남기고 가기</div>
-        <br>
-        <div class="guestbook-form">
-            <textarea id="msg" placeholder="오늘도 기붐 좋은 하루 되세요 :)"></textarea>
-            <div class="status-msg" id="statusMsg"></div>
-            <button id="submitBtn" onclick="addMessage()">등록하기</button>
-        </div>
-        <hr>
-        <div id="guestbook"></div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// ── BGM ──────────────────────────────────────────────
-const playlist = [
-    "https://nlvkfrekpundyinhgtzo.supabase.co/storage/v1/object/public/bgm/BTS%20one%20day.mp3",
-    "https://nlvkfrekpundyinhgtzo.supabase.co/storage/v1/object/public/bgm/2%20soon.mp3",
-    "https://nlvkfrekpundyinhgtzo.supabase.co/storage/v1/object/public/bgm/seven%20goodnight.mp3",
-    "https://nlvkfrekpundyinhgtzo.supabase.co/storage/v1/object/public/bgm/keshi%20Dream.mp3"
-];
-
-// 랜덤 셔플 (Fisher-Yates)
-function shuffleArray(arr) {
-    const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-}
-
-let shuffled = shuffleArray(playlist);
-let currentIndex = 0;
-
-const bgm = document.getElementById("bgm");
-bgm.volume = 0.5;
-
-function loadTrack(index, autoplay) {
-    currentIndex = ((index % shuffled.length) + shuffled.length) % shuffled.length;
-    bgm.src = shuffled[currentIndex];
-    if (autoplay) {
-        bgm.play().then(() => {
-            document.getElementById("playBtn").textContent = "⏸ 정지";
-        }).catch(() => {});
-    }
-}
-
-function nextTrack() {
-    const wasPlaying = !bgm.paused;
-    // 마지막 곡이면 다시 셔플
-    if (currentIndex + 1 >= shuffled.length) shuffled = shuffleArray(playlist);
-    loadTrack(currentIndex + 1, wasPlaying);
-}
-
-function prevTrack() {
-    const wasPlaying = !bgm.paused;
-    loadTrack(currentIndex - 1, wasPlaying);
-}
-
-bgm.addEventListener("ended", () => {
-    if (currentIndex + 1 >= shuffled.length) shuffled = shuffleArray(playlist);
-    loadTrack(currentIndex + 1, true);
-});
-
-loadTrack(0, false);
-bgm.play().then(() => {
-    document.getElementById("playBtn").textContent = "⏸ 정지";
-}).catch(() => {
-    const autoPlay = () => {
-        bgm.play().then(() => {
-            document.getElementById("playBtn").textContent = "⏸ 정지";
-        });
-        document.removeEventListener("click", autoPlay);
-    };
-    document.addEventListener("click", autoPlay);
-});
-
-function toggleBGM() {
-    const btn = document.getElementById("playBtn");
-    if (bgm.paused) {
-        bgm.play().then(() => { btn.textContent = "⏸ 정지"; }).catch(() => {});
-    } else {
-        bgm.pause();
-        btn.textContent = "▶ 재생";
-    }
-}
-
 // ── 방명록 ────────────────────────────────────────────
 const supabaseUrl = "https://nlvkfrekpundyinhgtzo.supabase.co";
-const supabaseKey = "sb_publishable_DQs8rT0Ff8WbemjjVSuV7w_DavNXXO3";
+const supabaseKey = "네 publishable key";
 const client = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-// 방문자 식별용 UUID (사용자에게는 보이지 않음)
+// 방문자 UUID 생성 (사용자에게는 보이지 않음)
 let visitorId = localStorage.getItem("visitor_id");
 
 if (!visitorId) {
     visitorId = crypto.randomUUID();
     localStorage.setItem("visitor_id", visitorId);
 }
+
+let isSubmitting = false;
+
+async function addMessage() {
+    if (isSubmitting) return;
 
     const msgEl = document.getElementById("msg");
     const submitBtn = document.getElementById("submitBtn");
@@ -325,10 +33,10 @@ if (!visitorId) {
     const { error } = await client
         .from("guestbook")
         .insert([{
-    nickname: "익명",
-    message: msg,
-    visitor_id: visitorId
-}]);
+            nickname: "익명",
+            message: msg,
+            visitor_id: visitorId
+        }]);
 
     if (error) {
         console.log(error);
@@ -340,14 +48,18 @@ if (!visitorId) {
 
     msgEl.value = "";
     statusMsg.textContent = "등록 완료! 🎉";
-    setTimeout(() => { statusMsg.textContent = ""; }, 2000);
+
+    setTimeout(() => {
+        statusMsg.textContent = "";
+    }, 2000);
 
     isSubmitting = false;
     submitBtn.disabled = false;
+
     loadMessages();
 }
 
-// Enter(Shift+Enter는 줄바꿈) 로도 등록 가능
+// Enter(Shift+Enter는 줄바꿈)
 document.getElementById("msg").addEventListener("keydown", function(e) {
     if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
@@ -356,20 +68,28 @@ document.getElementById("msg").addEventListener("keydown", function(e) {
 });
 
 async function loadMessages() {
-    const { data } = await client
+    const { data, error } = await client
         .from("guestbook")
         .select("*")
         .order("id", { ascending: false });
+
+    if (error) {
+        console.log(error);
+        return;
+    }
+
     const box = document.getElementById("guestbook");
     box.innerHTML = "";
+
     (data || []).forEach(row => {
         const div = document.createElement("div");
         div.className = "entry";
-        div.innerHTML = `<span class="name">${row.nickname || "익명"}</span> : ${row.message}`;
+
+        div.innerHTML =
+            `<span class="name">${row.nickname || "익명"}</span> : ${row.message}`;
+
         box.appendChild(div);
     });
 }
+
 loadMessages();
-</script>
-</body>
-</html>
