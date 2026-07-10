@@ -300,10 +300,13 @@ const supabaseUrl = "https://nlvkfrekpundyinhgtzo.supabase.co";
 const supabaseKey = "sb_publishable_DQs8rT0Ff8WbemjjVSuV7w_DavNXXO3";
 const client = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-let isSubmitting = false;
+// 방문자 식별용 UUID (사용자에게는 보이지 않음)
+let visitorId = localStorage.getItem("visitor_id");
 
-async function addMessage() {
-    if (isSubmitting) return;
+if (!visitorId) {
+    visitorId = crypto.randomUUID();
+    localStorage.setItem("visitor_id", visitorId);
+}
 
     const msgEl = document.getElementById("msg");
     const submitBtn = document.getElementById("submitBtn");
@@ -321,7 +324,11 @@ async function addMessage() {
 
     const { error } = await client
         .from("guestbook")
-        .insert([{ nickname: "익명", message: msg }]);
+        .insert([{
+    nickname: "익명",
+    message: msg,
+    visitor_id: visitorId
+}]);
 
     if (error) {
         console.log(error);
